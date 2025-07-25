@@ -1,0 +1,48 @@
+using System;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using SentimentAnalysisApp;
+
+namespace SentimentAnalysisApp
+{
+    public class SentimentModelBuilder
+    {
+        public static void TrainAndSaveModel(string dataPath, string modelPath)
+        {
+            // 1. ML context oluştur
+            var mlContext = new MLContext();
+
+            // 2. Veriyi yükle (hasHeader true unutma!)
+            var data = mlContext.Data.LoadFromTextFile<SentimentData>(
+                path: dataPath,
+                hasHeader: true,
+                separatorChar: ',');
+
+            // 3. Pipeline tanımla: Text ➤ Features ➤ SDCA Logistic Regression
+            var pipeline = mlContext.Transforms.Text.FeaturizeText(
+                    outputColumnName: "Features",
+                    inputColumnName: nameof(SentimentData.Text))
+                .Append(mlContext.BinaryClassification.Trainers.SdcaLogisticRegression(
+                    labelColumnName: nameof(SentimentData.Label),
+                    featureColumnName: "Features"));
+
+            // 4. Eğit
+            var model = pipeline.Fit(data);
+
+            // 5. Kaydet
+            mlContext.Model.Save(model, data.Schema, modelPath);
+
+            Console.WriteLine("✅ Model kaydedildi: " + modelPath);
+        }
+
+        // 6. Main giriş noktası
+        public static void Main(string[] args)
+        {
+            // Dosya yolları
+            var dataPath = "sentiment_data.csv";
+            var modelPath = "sentiment_model.zip";
+
+            TrainAndSaveModel(dataPath, modelPath);
+        }
+    }
+}

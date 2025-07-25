@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "6hTUZAFDKM4MNKT4m76GuB3F8Dayl14UpbMLh7ypYcM=",
+  "Source": "SentimentAnalysisApp",
+  "BasePath": "_content/SentimentAnalysisApp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
